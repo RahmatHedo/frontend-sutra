@@ -7,6 +7,12 @@ export default function SidebarPetani({ activePage }) {
   const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
 
+  useEffect(() => {
+    const toggle = () => setIsOpen(prev => !prev);
+    window.addEventListener('toggleSidebar', toggle);
+    return () => window.removeEventListener('toggleSidebar', toggle);
+  }, []);
+
   const handleLogout = () => {
     logout();
     navigate('/login');

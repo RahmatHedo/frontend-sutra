@@ -1,9 +1,17 @@
+import { useState, useEffect } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 
 export default function SidebarKetua() {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
+  const [isOpen, setIsOpen] = useState(false);
+
+  useEffect(() => {
+    const toggle = () => setIsOpen(prev => !prev);
+    window.addEventListener('toggleSidebar', toggle);
+    return () => window.removeEventListener('toggleSidebar', toggle);
+  }, []);
 
   const handleLogout = () => {
     logout();
@@ -24,8 +32,18 @@ export default function SidebarKetua() {
   ];
 
   return (
-    <aside className="sidebar">
-      <div className="sidebar-logo">
+    <>
+      {/* Mobile overlay */}
+      {isOpen && (
+        <div
+          className="sidebar-overlay show"
+          style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.4)', zIndex: 199 }}
+          onClick={() => setIsOpen(false)}
+        />
+      )}
+
+      <aside className={`sidebar${isOpen ? ' open' : ''}`}>
+        <div className="sidebar-logo">
         <NavLink to="/ketua/dashboard" className="logo-mark">
           <div className="logo-icon"><i className="ti ti-plant"></i></div>
           <div className="logo-text">Su<span>tra</span></div>
@@ -43,6 +61,7 @@ export default function SidebarKetua() {
             key={item.key}
             to={item.to}
             className={({ isActive }) => `nav-item${isActive ? ' active' : ''}`}
+            onClick={() => setIsOpen(false)}
           >
             <i className={`ti ${item.icon}`}></i>
             {item.label}
@@ -62,6 +81,7 @@ export default function SidebarKetua() {
           <i className="ti ti-logout sidebar-footer-icon" style={{ fontSize: 18, cursor: 'pointer', padding: '4px' }} onClick={handleLogout} title="Keluar"></i>
         </div>
       </div>
-    </aside>
+      </aside>
+    </>
   );
 }

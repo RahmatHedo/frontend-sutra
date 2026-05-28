@@ -10,6 +10,9 @@ export default function Topbar({ title, breadcrumb, profileLink }) {
   return (
     <header className="topbar">
       <div className="topbar-left">
+        <div className="menu-toggle" onClick={() => window.dispatchEvent(new Event('toggleSidebar'))}>
+          <i className="ti ti-menu-2"></i>
+        </div>
         <div className="page-title">{title}</div>
         {breadcrumb && <div className="breadcrumb">{breadcrumb}</div>}
       </div>
